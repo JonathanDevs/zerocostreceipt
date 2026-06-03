@@ -1,0 +1,5 @@
+allowBuilds:
+  '@google/genai': true
+  core-js: set this to true or false
+  esbuild: true
+  protobufjs: true
