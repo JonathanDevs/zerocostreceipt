@@ -1,5 +1,5 @@
-import { useState, useMemo, useRef } from 'react';
-import { FileSpreadsheet, FileText, Download, Calendar } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { FileSpreadsheet, FileText, Download } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -17,9 +17,6 @@ export default function Reports({ receipts }: ReportsProps) {
   const [selectedCurrencies, setSelectedCurrencies] = useState<string[]>([]);
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
-
-  const dateFromRef = useRef<HTMLInputElement>(null);
-  const dateToRef = useRef<HTMLInputElement>(null);
 
   const filtered = useMemo(() => receipts.filter(r => {
     if (selectedCategories.length && !selectedCategories.includes(r.categoria_sugerida)) return false;
@@ -137,16 +134,16 @@ export default function Reports({ receipts }: ReportsProps) {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm space-y-6">
+      <div className="bg-white dark:bg-gray-800 border border-slate-100 dark:border-gray-700 rounded-2xl p-6 shadow-sm space-y-6">
         <div className="flex items-center justify-between">
-          <h3 className="font-bold text-slate-800 text-sm">Filtros del Reporte</h3>
-          <span className="text-xs text-slate-400">{receipts.length} recibos en total</span>
+          <h3 className="font-bold text-slate-800 dark:text-gray-100 text-sm">Filtros del Reporte</h3>
+          <span className="text-xs text-slate-400 dark:text-gray-500">{receipts.length} recibos en total</span>
         </div>
 
         {categories.length > 0 && (
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-semibold text-slate-500">Categorías</label>
+              <label className="text-xs font-semibold text-slate-500 dark:text-gray-400">Categorías</label>
               <button onClick={() => selectAll(categories, setSelectedCategories, selectedCategories)}
                 className="text-[10px] text-emerald-600 font-bold hover:underline cursor-pointer">
                 {selectedCategories.length === categories.length ? 'Deseleccionar todas' : 'Seleccionar todas'}
@@ -158,7 +155,7 @@ export default function Reports({ receipts }: ReportsProps) {
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                     selectedCategories.includes(cat)
                       ? 'bg-black text-white shadow-sm'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      : 'bg-slate-100 dark:bg-gray-700 text-slate-600 dark:text-gray-400 hover:bg-slate-200 dark:hover:bg-gray-600'
                   }`}>
                   {cat}
                 </button>
@@ -170,7 +167,7 @@ export default function Reports({ receipts }: ReportsProps) {
         {currencies.length > 0 && (
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-semibold text-slate-500">Monedas</label>
+              <label className="text-xs font-semibold text-slate-500 dark:text-gray-400">Monedas</label>
               <button onClick={() => selectAll(currencies, setSelectedCurrencies, selectedCurrencies)}
                 className="text-[10px] text-emerald-600 font-bold hover:underline cursor-pointer">
                 {selectedCurrencies.length === currencies.length ? 'Deseleccionar todas' : 'Seleccionar todas'}
@@ -182,7 +179,7 @@ export default function Reports({ receipts }: ReportsProps) {
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                     selectedCurrencies.includes(curr)
                       ? 'bg-black text-white shadow-sm'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      : 'bg-slate-100 dark:bg-gray-700 text-slate-600 dark:text-gray-400 hover:bg-slate-200 dark:hover:bg-gray-600'
                   }`}>
                   {curr}
                 </button>
@@ -193,30 +190,22 @@ export default function Reports({ receipts }: ReportsProps) {
 
         <div className="flex gap-4 items-end flex-wrap">
           <div>
-            <label className="text-xs font-semibold text-slate-500 block mb-1">Desde</label>
-            <div className="relative">
-              <input ref={dateFromRef} type="date" value={dateFrom}
-                min={minDate} max={maxDate || undefined}
-                onChange={e => setDateFrom(e.target.value)}
-                className="border border-slate-200 rounded-lg pl-3 pr-8 py-1.5 text-sm bg-white appearance-none cursor-pointer w-full min-w-[140px]" />
-              <Calendar onClick={() => dateFromRef.current?.showPicker?.() ?? dateFromRef.current?.click()}
-                className="w-4 h-4 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-            </div>
+            <label className="text-xs font-semibold text-slate-500 dark:text-gray-400 block mb-1">Desde</label>
+            <input type="date" value={dateFrom}
+              min={minDate} max={maxDate || undefined}
+              onChange={e => setDateFrom(e.target.value)}
+              className="border border-slate-200 dark:border-gray-700 rounded-lg px-3 py-1.5 text-sm bg-white dark:bg-gray-800 cursor-pointer w-full min-w-[140px]" />
           </div>
           <div>
-            <label className="text-xs font-semibold text-slate-500 block mb-1">Hasta</label>
-            <div className="relative">
-              <input ref={dateToRef} type="date" value={dateTo}
-                min={dateFrom || minDate} max={maxDate || undefined}
-                onChange={e => setDateTo(e.target.value)}
-                className="border border-slate-200 rounded-lg pl-3 pr-8 py-1.5 text-sm bg-white appearance-none cursor-pointer w-full min-w-[140px]" />
-              <Calendar onClick={() => dateToRef.current?.showPicker?.() ?? dateToRef.current?.click()}
-                className="w-4 h-4 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-            </div>
+            <label className="text-xs font-semibold text-slate-500 dark:text-gray-400 block mb-1">Hasta</label>
+            <input type="date" value={dateTo}
+              min={dateFrom || minDate} max={maxDate || undefined}
+              onChange={e => setDateTo(e.target.value)}
+              className="border border-slate-200 dark:border-gray-700 rounded-lg px-3 py-1.5 text-sm bg-white dark:bg-gray-800 cursor-pointer w-full min-w-[140px]" />
           </div>
           {(dateFrom || dateTo || selectedCategories.length || selectedCurrencies.length) && (
             <button onClick={() => { setSelectedCategories([]); setSelectedCurrencies([]); setDateFrom(''); setDateTo(''); }}
-              className="text-xs text-slate-500 hover:text-black underline cursor-pointer">
+              className="text-xs text-slate-500 dark:text-gray-400 hover:text-black underline cursor-pointer">
               Limpiar filtros
             </button>
           )}
@@ -233,26 +222,26 @@ export default function Reports({ receipts }: ReportsProps) {
           <FileText className="w-4 h-4" /> Exportar a PDF
         </button>
         {!!filtered.length && (
-          <span className="text-xs text-slate-400 flex items-center">
+          <span className="text-xs text-slate-400 dark:text-gray-500 flex items-center">
             <Download className="w-3 h-3 mr-1" /> {filtered.length} recibos listos para exportar
           </span>
         )}
       </div>
 
-      <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm">
-        <h3 className="font-bold text-slate-800 text-sm mb-4">
-          Vista Previa {filtered.length > 0 && <span className="font-mono text-slate-400">({filtered.length} recibos)</span>}
+      <div className="bg-white dark:bg-gray-800 border border-slate-100 dark:border-gray-700 rounded-2xl p-6 shadow-sm">
+        <h3 className="font-bold text-slate-800 dark:text-gray-100 text-sm mb-4">
+          Vista Previa {filtered.length > 0 && <span className="font-mono text-slate-400 dark:text-gray-500">({filtered.length} recibos)</span>}
         </h3>
         {!filtered.length ? (
           <div className="text-center py-12">
-            <p className="text-sm text-slate-400">No hay recibos que coincidan con los filtros seleccionados.</p>
+            <p className="text-sm text-slate-400 dark:text-gray-500">No hay recibos que coincidan con los filtros seleccionados.</p>
             <p className="text-xs text-slate-300 mt-1">Ajusta los filtros o agrega recibos desde la sección Cargar Recibos.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-200 text-left text-xs text-slate-500">
+                <tr className="border-b border-slate-200 dark:border-gray-700 text-left text-xs text-slate-500 dark:text-gray-400">
                   <th className="pb-2.5 pr-3 font-semibold">Fecha</th>
                   <th className="pb-2.5 pr-3 font-semibold">Comercio</th>
                   <th className="pb-2.5 pr-3 font-semibold">Categoría</th>
@@ -264,21 +253,21 @@ export default function Reports({ receipts }: ReportsProps) {
               </thead>
               <tbody>
                 {filtered.map(r => (
-                  <tr key={r.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
-                    <td className="py-2.5 pr-3 text-slate-600">{r.fecha_emision}</td>
+                  <tr key={r.id} className="border-b border-slate-100 dark:border-gray-700 last:border-0 hover:bg-slate-50 dark:hover:bg-gray-700 transition-colors">
+                    <td className="py-2.5 pr-3 text-slate-600 dark:text-gray-400">{r.fecha_emision}</td>
                     <td className="py-2.5 pr-3 font-medium">{r.comercio}</td>
                     <td className="py-2.5 pr-3">
-                      <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[10px] font-semibold">{r.categoria_sugerida}</span>
+                      <span className="bg-slate-100 dark:bg-gray-700 text-slate-700 dark:text-gray-300 px-2 py-0.5 rounded text-[10px] font-semibold">{r.categoria_sugerida}</span>
                     </td>
-                    <td className="py-2.5 pr-3 text-slate-500">{r.moneda}</td>
-                    <td className="py-2.5 pr-3 text-right font-mono text-slate-600">{r.subtotal.toFixed(2)}</td>
-                    <td className="py-2.5 pr-3 text-right font-mono text-slate-600">{r.impuestos.toFixed(2)}</td>
+                    <td className="py-2.5 pr-3 text-slate-500 dark:text-gray-400">{r.moneda}</td>
+                    <td className="py-2.5 pr-3 text-right font-mono text-slate-600 dark:text-gray-400">{r.subtotal.toFixed(2)}</td>
+                    <td className="py-2.5 pr-3 text-right font-mono text-slate-600 dark:text-gray-400">{r.impuestos.toFixed(2)}</td>
                     <td className="py-2.5 text-right font-mono font-bold">{r.total.toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>
               <tfoot>
-                <tr className="border-t border-slate-200 font-bold text-sm">
+                <tr className="border-t border-slate-200 dark:border-gray-700 font-bold text-sm">
                   <td colSpan={6} className="pt-3 pr-3 text-right">Totales:</td>
                   <td className="pt-3 text-right font-mono">
                     {totalsEntries.map(([m, t]) => (

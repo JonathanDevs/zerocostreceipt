@@ -205,7 +205,7 @@ export default function UploadZone({ onReceiptAdded, customApiKey }: UploadZoneP
         className={`border-2 border-dashed rounded-3xl p-12 text-center cursor-pointer transition-all duration-300 relative ${
           dragActive
             ? 'border-black bg-black/5 scale-[1.01]'
-            : 'border-[#E5E7EB] hover:border-black hover:bg-neutral-50/40'
+            : 'border-[#E5E7EB] dark:border-gray-700 hover:border-black hover:bg-neutral-50/40'
         }`}
       >
         <input
@@ -218,14 +218,14 @@ export default function UploadZone({ onReceiptAdded, customApiKey }: UploadZoneP
         />
 
         <div className="flex flex-col items-center justify-center space-y-4">
-          <div className="p-4 bg-[#F3F4F6] rounded-full text-black border border-[#E5E7EB] shadow-xs">
+          <div className="p-4 bg-[#F3F4F6] dark:bg-gray-700 rounded-full text-black border border-[#E5E7EB] dark:border-gray-700 shadow-xs">
             <Upload className="w-8 h-8 stroke-[1.8]" />
           </div>
           <div>
-            <p className="text-sm font-bold text-slate-800">
+            <p className="text-sm font-bold text-slate-800 dark:text-gray-100">
               Arrastra y suelta múltiples recibos de pago
             </p>
-            <p className="text-xs text-[#6B7280] mt-1 font-semibold">
+            <p className="text-xs text-[#6B7280] dark:text-gray-400 mt-1 font-semibold">
               Formatos soportados: PNG, JPG, JPEG (Subida masiva inteligente)
             </p>
           </div>
@@ -240,17 +240,17 @@ export default function UploadZone({ onReceiptAdded, customApiKey }: UploadZoneP
 
       {/* Progress Queue Section */}
       {uploadQueue.length > 0 && (
-        <div id="upload-queue-container" className="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-xs">
+        <div id="upload-queue-container" className="bg-white dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 rounded-2xl p-5 shadow-xs">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="font-bold text-slate-900 text-sm">Cola de Procesamiento Masivo</h3>
-              <p className="text-xs text-[#6B7280] mt-0.5 font-semibold">
+              <p className="text-xs text-[#6B7280] dark:text-gray-400 mt-0.5 font-semibold">
                 Procesando simultáneamente utilizando Gemini 1.5 Flash
               </p>
             </div>
             <button
               onClick={clearQueue}
-              className="text-xs font-semibold text-neutral-700 hover:text-black bg-[#F3F4F6] hover:bg-[#E5E7EB] px-3.5 py-2 rounded-full transition-colors"
+              className="text-xs font-semibold text-neutral-700 dark:text-gray-300 hover:text-black bg-[#F3F4F6] dark:bg-gray-700 hover:bg-[#E5E7EB] dark:bg-gray-600 px-3.5 py-2 rounded-full transition-colors"
             >
               Limpiar Lista
             </button>
@@ -267,7 +267,7 @@ export default function UploadZone({ onReceiptAdded, customApiKey }: UploadZoneP
 
               const colors = {
                 reading: { text: 'text-amber-700 bg-amber-50', progressBg: 'bg-amber-400' },
-                analyzing: { text: 'text-black bg-[#F3F4F6]', progressBg: 'bg-black' },
+                analyzing: { text: 'text-black bg-[#F3F4F6] dark:bg-gray-700', progressBg: 'bg-black' },
                 success: { text: 'text-emerald-700 bg-emerald-50', progressBg: 'bg-emerald-500' },
                 error: { text: 'text-red-700 bg-red-50', progressBg: 'bg-red-500' },
               };
@@ -278,10 +278,10 @@ export default function UploadZone({ onReceiptAdded, customApiKey }: UploadZoneP
                 <div
                   key={file.id}
                   id={`queue-item-${file.id}`}
-                  className="p-3.5 bg-[#F9FAFB] hover:bg-white border border-[#E5E7EB] rounded-xl flex items-center gap-4 transition-all"
+                  className="p-3.5 bg-[#F9FAFB] dark:bg-gray-700 hover:bg-white dark:hover:bg-gray-600 dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 rounded-xl flex items-center gap-4 transition-all"
                 >
                   {/* File Thumbnail Preview */}
-                  <div className="w-12 h-12 rounded-lg overflow-hidden bg-[#F3F4F6] border border-[#E5E7EB] flex-shrink-0 relative">
+                  <div className="w-12 h-12 rounded-lg overflow-hidden bg-[#F3F4F6] dark:bg-gray-700 border border-[#E5E7EB] dark:border-gray-700 flex-shrink-0 relative">
                     {file.thumbnail ? (
                       <img
                         src={file.thumbnail}
@@ -290,23 +290,23 @@ export default function UploadZone({ onReceiptAdded, customApiKey }: UploadZoneP
                         referrerPolicy="no-referrer"
                       />
                     ) : (
-                      <FileImage className="w-6 h-6 text-[#9CA3AF] absolute inset-0 m-auto" />
+                      <FileImage className="w-6 h-6 text-[#9CA3AF] dark:text-gray-500 absolute inset-0 m-auto" />
                     )}
                   </div>
 
                   {/* Processing Status & Details */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-xs font-bold text-slate-800 block truncate leading-tight">
+                      <span className="text-xs font-bold text-slate-800 dark:text-gray-100 block truncate leading-tight">
                         {file.name}
                       </span>
-                      <span className="text-[10px] text-[#6B7280] font-mono flex-shrink-0">
+                      <span className="text-[10px] text-[#6B7280] dark:text-gray-400 font-mono flex-shrink-0">
                         {formatSize(file.size)}
                       </span>
                     </div>
 
                     {/* Progress Bar */}
-                    <div className="w-full bg-[#E5E7EB] h-1.5 rounded-full overflow-hidden mb-1.5">
+                    <div className="w-full bg-[#E5E7EB] dark:bg-gray-600 h-1.5 rounded-full overflow-hidden mb-1.5">
                       <div
                         className={`h-full transition-all duration-300 ${currentTheme.progressBg}`}
                         style={{ width: `${file.progress}%` }}

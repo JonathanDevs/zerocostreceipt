@@ -115,20 +115,20 @@ export default function Dashboard({
     <div id="dashboard-wrapper" className="space-y-6">
       
       {/* Dynamic Date Filtering Controls Header */}
-      <div id="dashboard-timebar" className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-5 border border-[#E5E7EB] rounded-2xl shadow-xs">
+      <div id="dashboard-timebar" className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white dark:bg-gray-800 p-5 border border-[#E5E7EB] dark:border-gray-700 rounded-2xl shadow-xs">
         <div>
-          <h2 className="text-sm font-bold text-[#111827] uppercase tracking-wider font-mono">Seguimiento del Gasto</h2>
-          <p className="text-xs text-[#6B7280] mt-0.5">Filtros dinámicos de tiempo en lote</p>
+          <h2 className="text-sm font-bold text-[#111827] dark:text-gray-100 uppercase tracking-wider font-mono">Seguimiento del Gasto</h2>
+          <p className="text-xs text-[#6B7280] dark:text-gray-400 mt-0.5">Filtros dinámicos de tiempo en lote</p>
         </div>
 
         {/* Filters Group tabs */}
         <div className="flex flex-wrap items-center gap-2">
           {/* Preset Buttons */}
-          <div className="bg-[#F3F4F6] p-1 rounded-xl flex gap-1 border border-[#E5E7EB]">
+          <div className="bg-[#F3F4F6] dark:bg-gray-700 p-1 rounded-xl flex gap-1 border border-[#E5E7EB] dark:border-gray-700">
             <button
               onClick={() => setActiveFilter('weekly')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
-                activeFilter === 'weekly' ? 'bg-white text-black font-bold shadow-xs' : 'text-[#6B7280] hover:text-black'
+                activeFilter === 'weekly' ? 'bg-white dark:bg-gray-800 text-black dark:text-white font-bold shadow-xs' : 'text-[#6B7280] dark:text-gray-400 hover:text-black'
               }`}
             >
               Semanal (7d)
@@ -136,7 +136,7 @@ export default function Dashboard({
             <button
               onClick={() => setActiveFilter('monthly')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
-                activeFilter === 'monthly' ? 'bg-white text-black font-bold shadow-xs' : 'text-[#6B7280] hover:text-black'
+                activeFilter === 'monthly' ? 'bg-white dark:bg-gray-800 text-black dark:text-white font-bold shadow-xs' : 'text-[#6B7280] dark:text-gray-400 hover:text-black'
               }`}
             >
               Mensual (30d)
@@ -144,7 +144,7 @@ export default function Dashboard({
             <button
               onClick={() => setActiveFilter('custom')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
-                activeFilter === 'custom' ? 'bg-white text-black font-bold shadow-xs' : 'text-[#6B7280] hover:text-black'
+                activeFilter === 'custom' ? 'bg-white dark:bg-gray-800 text-black dark:text-white font-bold shadow-xs' : 'text-[#6B7280] dark:text-gray-400 hover:text-black'
               }`}
             >
               Rango Personalizado
@@ -153,19 +153,19 @@ export default function Dashboard({
 
           {/* Custom Dates Input panel */}
           {activeFilter === 'custom' && (
-            <div id="custom-date-inputs" className="flex items-center gap-1.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl px-2.5 py-1.5">
+            <div id="custom-date-inputs" className="flex items-center gap-1.5 bg-[#F9FAFB] dark:bg-gray-700 border border-[#E5E7EB] dark:border-gray-700 rounded-xl px-2.5 py-1.5">
               <input
                 type="date"
                 value={customDateRange.start}
                 onChange={(e) => setCustomDateRange({ ...customDateRange, start: e.target.value })}
-                className="text-xs bg-transparent focus:outline-none text-neutral-800 font-medium cursor-pointer"
+                className="text-xs bg-transparent focus:outline-none text-neutral-800 dark:text-gray-200 font-medium cursor-pointer"
               />
-              <span className="text-[10px] uppercase font-mono text-[#9CA3AF]">al</span>
+              <span className="text-[10px] uppercase font-mono text-[#9CA3AF] dark:text-gray-500">al</span>
               <input
                 type="date"
                 value={customDateRange.end}
                 onChange={(e) => setCustomDateRange({ ...customDateRange, end: e.target.value })}
-                className="text-xs bg-transparent focus:outline-none text-neutral-800 font-medium cursor-pointer"
+                className="text-xs bg-transparent focus:outline-none text-neutral-800 dark:text-gray-200 font-medium cursor-pointer"
               />
             </div>
           )}
@@ -176,19 +176,19 @@ export default function Dashboard({
       <div id="kpi-cards-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         
         {/* KPI 1: Gasto Total */}
-        <div id="kpi-card-total-spent" className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-xs relative overflow-hidden group hover:border-neutral-300 transition-all">
+        <div id="kpi-card-total-spent" className="bg-white dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 rounded-2xl p-6 shadow-xs relative overflow-hidden group hover:border-neutral-300 transition-all">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold text-[#6B7280] uppercase tracking-widest font-mono">Total Mes</span>
-            <div className="p-1.5 bg-[#F3F4F6] text-neutral-800 rounded-lg group-hover:scale-105 transition-transform">
+            <span className="text-xs font-bold text-[#6B7280] dark:text-gray-400 uppercase tracking-widest font-mono">Total Mes</span>
+            <div className="p-1.5 bg-[#F3F4F6] dark:bg-gray-700 text-neutral-800 dark:text-gray-200 rounded-lg group-hover:scale-105 transition-transform">
               <CreditCard className="w-3.5 h-3.5 stroke-[1.8]" />
             </div>
           </div>
           <div className="space-y-2">
             {currencyTotalsEntries.length === 0 ? (
-              <span className="text-3xl font-light tracking-tighter text-[#111827] block">$0.00</span>
+              <span className="text-3xl font-light tracking-tighter text-[#111827] dark:text-gray-100 block">$0.00</span>
             ) : (
               currencyTotalsEntries.map(([currency, total]) => (
-                <span key={currency} className="text-3xl font-light tracking-tighter text-[#111827] block leading-none">
+                <span key={currency} className="text-3xl font-light tracking-tighter text-[#111827] dark:text-gray-100 block leading-none">
                   {currency} {total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
               ))
@@ -200,60 +200,60 @@ export default function Dashboard({
         </div>
 
         {/* KPI 2: Impuestos (IVA) */}
-        <div id="kpi-card-taxes" className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-xs relative overflow-hidden group hover:border-neutral-300 transition-all">
+        <div id="kpi-card-taxes" className="bg-white dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 rounded-2xl p-6 shadow-xs relative overflow-hidden group hover:border-neutral-300 transition-all">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold text-[#6B7280] uppercase tracking-widest font-mono">Tasas & IVA</span>
-            <div className="p-1.5 bg-[#F3F4F6] text-neutral-800 rounded-lg group-hover:scale-105 transition-transform">
+            <span className="text-xs font-bold text-[#6B7280] dark:text-gray-400 uppercase tracking-widest font-mono">Tasas & IVA</span>
+            <div className="p-1.5 bg-[#F3F4F6] dark:bg-gray-700 text-neutral-800 dark:text-gray-200 rounded-lg group-hover:scale-105 transition-transform">
               <Scale className="w-3.5 h-3.5 stroke-[1.8]" />
             </div>
           </div>
           <div className="space-y-2">
             {currencyTaxesEntries.length === 0 ? (
-              <span className="text-3xl font-light tracking-tighter text-[#111827] block">$0.00</span>
+              <span className="text-3xl font-light tracking-tighter text-[#111827] dark:text-gray-100 block">$0.00</span>
             ) : (
               currencyTaxesEntries.map(([currency, taxValue]) => (
-                <span key={currency} className="text-3xl font-light tracking-tighter text-[#111827] block leading-none">
+                <span key={currency} className="text-3xl font-light tracking-tighter text-[#111827] dark:text-gray-100 block leading-none">
                   {currency} {taxValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
               ))
             )}
-            <div className="mt-2.5 flex items-center gap-1.5 text-[10px] font-bold text-[#6B7280] bg-[#F3F4F6] px-2 py-0.5 rounded w-fit uppercase tracking-wider">
+            <div className="mt-2.5 flex items-center gap-1.5 text-[10px] font-bold text-[#6B7280] dark:text-gray-400 bg-[#F3F4F6] dark:bg-gray-700 px-2 py-0.5 rounded w-fit uppercase tracking-wider">
               <span>Impuestos estimados</span>
             </div>
           </div>
         </div>
 
         {/* KPI 3: Recibos procesados */}
-        <div id="kpi-card-processed" className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-xs relative overflow-hidden group hover:border-neutral-300 transition-all">
+        <div id="kpi-card-processed" className="bg-white dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 rounded-2xl p-6 shadow-xs relative overflow-hidden group hover:border-neutral-300 transition-all">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold text-[#6B7280] uppercase tracking-widest font-mono">Facturas Listas</span>
-            <div className="p-1.5 bg-[#F3F4F6] text-neutral-800 rounded-lg group-hover:scale-105 transition-transform">
+            <span className="text-xs font-bold text-[#6B7280] dark:text-gray-400 uppercase tracking-widest font-mono">Facturas Listas</span>
+            <div className="p-1.5 bg-[#F3F4F6] dark:bg-gray-700 text-neutral-800 dark:text-gray-200 rounded-lg group-hover:scale-105 transition-transform">
               <ReceiptIcon className="w-3.5 h-3.5 stroke-[1.8]" />
             </div>
           </div>
           <div className="space-y-2">
-            <span className="text-3xl font-light tracking-tighter text-[#111827] block leading-none">
-              {filtered.length} <sub className="text-xs text-[#6B7280] font-normal tracking-normal lowercase">recibos</sub>
+            <span className="text-3xl font-light tracking-tighter text-[#111827] dark:text-gray-100 block leading-none">
+              {filtered.length} <sub className="text-xs text-[#6B7280] dark:text-gray-400 font-normal tracking-normal lowercase">recibos</sub>
             </span>
-            <div className="mt-2.5 flex items-center gap-1.5 text-[10px] font-bold text-[#6B7280] bg-[#F3F4F6] px-2 py-0.5 rounded w-fit uppercase tracking-wider">
+            <div className="mt-2.5 flex items-center gap-1.5 text-[10px] font-bold text-[#6B7280] dark:text-gray-400 bg-[#F3F4F6] dark:bg-gray-700 px-2 py-0.5 rounded w-fit uppercase tracking-wider">
               <span>{receipts.length - filtered.length === 0 ? 'Sin filtros activos' : `${receipts.length - filtered.length} filtrados`}</span>
             </div>
           </div>
         </div>
 
         {/* KPI 4: Top Category */}
-        <div id="kpi-card-top-category" className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-xs relative overflow-hidden group hover:border-neutral-300 transition-all">
+        <div id="kpi-card-top-category" className="bg-white dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 rounded-2xl p-6 shadow-xs relative overflow-hidden group hover:border-neutral-300 transition-all">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold text-[#6B7280] uppercase tracking-widest font-mono">Gasto Principal</span>
-            <div className="p-1.5 bg-[#F3F4F6] text-neutral-800 rounded-lg group-hover:scale-105 transition-transform">
+            <span className="text-xs font-bold text-[#6B7280] dark:text-gray-400 uppercase tracking-widest font-mono">Gasto Principal</span>
+            <div className="p-1.5 bg-[#F3F4F6] dark:bg-gray-700 text-neutral-800 dark:text-gray-200 rounded-lg group-hover:scale-105 transition-transform">
               <TrendingUp className="w-3.5 h-3.5 stroke-[1.8]" />
             </div>
           </div>
           <div className="space-y-2">
-            <span className="text-2xl font-light tracking-tight text-[#111827] block truncate leading-none pt-0.5" title={topCategoryName}>
+            <span className="text-2xl font-light tracking-tight text-[#111827] dark:text-gray-100 block truncate leading-none pt-0.5" title={topCategoryName}>
               {topCategoryName}
             </span>
-            <div className="mt-2.5 flex items-center gap-1.5 text-[10px] font-bold text-neutral-700 bg-neutral-100 px-2 py-0.5 rounded w-fit uppercase tracking-wider">
+            <div className="mt-2.5 flex items-center gap-1.5 text-[10px] font-bold text-neutral-700 dark:text-gray-300 bg-neutral-100 dark:bg-gray-700 px-2 py-0.5 rounded w-fit uppercase tracking-wider">
               <span>{topCategoryEntry ? `${topCategoryEntry[1]} transacciones` : 'Sin registros'}</span>
             </div>
           </div>
@@ -262,13 +262,13 @@ export default function Dashboard({
 
       {/* SUB-SECTION SHIFTING IN CASE DATABASE IS COMPLETELY EMPTY */}
       {receipts.length === 0 && (
-        <div id="empty-state-card" className="bg-white border-2 border-dashed border-[#D1D5DB] rounded-3xl p-12 text-center space-y-6 max-w-2xl mx-auto my-10 shadow-xs">
-          <div className="p-5 bg-[#F3F4F6] text-neutral-700 rounded-full w-fit mx-auto">
+        <div id="empty-state-card" className="bg-white dark:bg-gray-800 border-2 border-dashed border-[#D1D5DB] rounded-3xl p-12 text-center space-y-6 max-w-2xl mx-auto my-10 shadow-xs">
+          <div className="p-5 bg-[#F3F4F6] dark:bg-gray-700 text-neutral-700 dark:text-gray-300 rounded-full w-fit mx-auto">
             <Sparkles className="w-8 h-8 stroke-[1.5]" />
           </div>
           <div className="space-y-2">
-            <h3 className="text-lg font-bold text-[#111827]">¿Listo para digitalizar recibos de forma masiva?</h3>
-            <p className="text-xs text-[#6B7280] max-w-md mx-auto leading-relaxed">
+            <h3 className="text-lg font-bold text-[#111827] dark:text-gray-100">¿Listo para digitalizar recibos de forma masiva?</h3>
+            <p className="text-xs text-[#6B7280] dark:text-gray-400 max-w-md mx-auto leading-relaxed">
               Descubre el potencial de Gemini 3.5 Flash para extraer subtotales, identificar RIF y desglosar artículos 
               en un pestañear de ojos con nuestra infraestructura costo cero.
             </p>

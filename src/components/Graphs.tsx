@@ -20,7 +20,7 @@ const CATEGORY_COLORS: Record<string, { bg: string, border: string, text: string
   Entretenimiento: { bg: 'bg-pink-500/10', border: 'border-pink-500/20', text: 'text-pink-500' },
   Hogar: { bg: 'bg-indigo-500/10', border: 'border-indigo-500/20', text: 'text-indigo-500' },
   Educación: { bg: 'bg-teal-500/10', border: 'border-teal-500/20', text: 'text-teal-500' },
-  Otros: { bg: 'bg-slate-500/10', border: 'border-slate-500/20', text: 'text-slate-500' },
+  Otros: { bg: 'bg-slate-500/10 dark:bg-gray-600/20', border: 'border-slate-500/20', text: 'text-slate-500 dark:text-gray-400' },
 };
 
 export default function Graphs({ receipts }: GraphsProps) {
@@ -126,21 +126,21 @@ export default function Graphs({ receipts }: GraphsProps) {
     <div id="graphs-wrapper" className="space-y-6">
       
       {/* Target Currency Filter panel */}
-      <div className="bg-white p-5 border border-[#E5E7EB] rounded-2xl shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-white dark:bg-gray-800 p-5 border border-[#E5E7EB] dark:border-gray-700 rounded-2xl shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-[#F3F4F6] rounded-xl text-black border border-[#E5E7EB]">
+          <div className="p-2.5 bg-[#F3F4F6] dark:bg-gray-700 rounded-xl text-black border border-[#E5E7EB] dark:border-gray-700">
             <PieChart className="w-5 h-5 stroke-[1.8]" />
           </div>
           <div>
-            <h3 className="font-bold text-[#111827] text-sm">Distribución de Informes Financieros</h3>
-            <p className="text-xs text-[#6B7280] mt-0.5 font-semibold">Filtra la moneda actual de las gráficas para evitar inconsistencias de cambio</p>
+            <h3 className="font-bold text-[#111827] dark:text-gray-100 text-sm">Distribución de Informes Financieros</h3>
+            <p className="text-xs text-[#6B7280] dark:text-gray-400 mt-0.5 font-semibold">Filtra la moneda actual de las gráficas para evitar inconsistencias de cambio</p>
           </div>
         </div>
 
         {/* Currency selector chips */}
         <div className="flex gap-1.5" aria-label="Selector de Moneda de Gráficas">
           {currencies.length === 0 ? (
-            <span className="text-xs font-semibold text-[#6B7280] bg-[#F3F4F6] px-3.5 py-2 rounded-xl border border-[#E5E7EB]">
+            <span className="text-xs font-semibold text-[#6B7280] dark:text-gray-400 bg-[#F3F4F6] dark:bg-gray-700 px-3.5 py-2 rounded-xl border border-[#E5E7EB] dark:border-gray-700">
               No hay monedas detectadas
             </span>
           ) : (
@@ -151,7 +151,7 @@ export default function Graphs({ receipts }: GraphsProps) {
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   selectedCurrency === curr
                     ? 'bg-black text-white shadow-xs'
-                    : 'bg-[#F3F4F6] text-[#4B5563] hover:bg-[#E5E7EB]'
+                    : 'bg-[#F3F4F6] dark:bg-gray-700 text-[#4B5563] hover:bg-[#E5E7EB]'
                 }`}
               >
                 {curr}
@@ -162,35 +162,35 @@ export default function Graphs({ receipts }: GraphsProps) {
       </div>
 
       {receipts.length === 0 ? (
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-12 text-center text-[#6B7280] space-y-3 shadow-xs">
-          <ShieldAlert className="w-8 h-8 text-[#9CA3AF] mx-auto" />
-          <p className="text-sm font-bold text-slate-800">Carga recibos primero para calcular métricas e informes visuales.</p>
+        <div className="bg-white dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 rounded-2xl p-12 text-center text-[#6B7280] dark:text-gray-400 space-y-3 shadow-xs">
+          <ShieldAlert className="w-8 h-8 text-[#9CA3AF] dark:text-gray-500 mx-auto" />
+          <p className="text-sm font-bold text-slate-800 dark:text-gray-100">Carga recibos primero para calcular métricas e informes visuales.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           
           {/* 1. Category Distribution Bar Chart */}
-          <div id="category-distribution-card" className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-xs space-y-5">
+          <div id="category-distribution-card" className="bg-white dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 rounded-2xl p-6 shadow-xs space-y-5">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="font-bold text-[#111827] text-sm flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4 text-neutral-800" /> Distribución por Categorías
+                <h4 className="font-bold text-[#111827] dark:text-gray-100 text-sm flex items-center gap-2">
+                  <BarChart3 className="w-4 h-4 text-neutral-800 dark:text-gray-200" /> Distribución por Categorías
                 </h4>
-                <p className="text-xs text-[#6B7280] mt-0.5 font-semibold">Gastos ponderados en ({selectedCurrency})</p>
+                <p className="text-xs text-[#6B7280] dark:text-gray-400 mt-0.5 font-semibold">Gastos ponderados en ({selectedCurrency})</p>
               </div>
-              <span className="text-xs font-bold text-[#111827] font-mono">
+              <span className="text-xs font-bold text-[#111827] dark:text-gray-100 font-mono">
                 Total: {selectedCurrency} {totalWithCurrency.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
 
             {categorySorted.length === 0 ? (
-              <div className="py-20 text-center text-xs text-[#6B7280] font-semibold">
+              <div className="py-20 text-center text-xs text-[#6B7280] dark:text-gray-400 font-semibold">
                 Sin registros para la moneda {selectedCurrency}
               </div>
             ) : (
               <div className="space-y-4 pt-2">
                 {categorySorted.map(({ category, amount, percentage }) => {
-                  const colorPair = CATEGORY_COLORS[category] || { bg: 'bg-[#F3F4F6]', border: 'border-[#E5E7EB]', text: 'text-[#6B7280]' };
+                  const colorPair = CATEGORY_COLORS[category] || { bg: 'bg-[#F3F4F6] dark:bg-gray-700', border: 'border-[#E5E7EB] dark:border-gray-700', text: 'text-[#6B7280] dark:text-gray-400' };
                   return (
                     <div key={category} id={`category-meter-${category}`} className="space-y-1.5 group">
                       <div className="flex items-center justify-between text-xs">
@@ -198,13 +198,13 @@ export default function Graphs({ receipts }: GraphsProps) {
                           <span className={`w-2.5 h-2.5 rounded-full ${colorPair.text.replace('text', 'bg')}`} />
                           {category}
                         </span>
-                        <span className="font-mono font-semibold text-neutral-800">
+                        <span className="font-mono font-semibold text-neutral-800 dark:text-gray-200">
                           {selectedCurrency} {amount.toFixed(2)} ({percentage.toFixed(0)}%)
                         </span>
                       </div>
                       
                       {/* Meter Slider */}
-                      <div className="w-full h-1.5 bg-[#F3F4F6] rounded-full overflow-hidden relative">
+                      <div className="w-full h-1.5 bg-[#F3F4F6] dark:bg-gray-700 rounded-full overflow-hidden relative">
                         <div
                           className={`h-full rounded-full transition-all duration-300 ${colorPair.text.replace('text', 'bg')}`}
                           style={{ width: `${percentage}%` }}
@@ -218,12 +218,12 @@ export default function Graphs({ receipts }: GraphsProps) {
           </div>
 
           {/* 2. Custom Line/Area Trend Chart */}
-          <div id="spending-trend-card" className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-xs space-y-5">
+          <div id="spending-trend-card" className="bg-white dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 rounded-2xl p-6 shadow-xs space-y-5">
             <div>
-              <h4 className="font-bold text-[#111827] text-sm flex items-center gap-2">
+              <h4 className="font-bold text-[#111827] dark:text-gray-100 text-sm flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-emerald-650" /> Tendencia de Gasto (Últimos 10 Días)
               </h4>
-              <p className="text-xs text-[#6B7280] mt-0.5 font-semibold">Línea de tiempo monetaria en ({selectedCurrency})</p>
+              <p className="text-xs text-[#6B7280] dark:text-gray-400 mt-0.5 font-semibold">Línea de tiempo monetaria en ({selectedCurrency})</p>
             </div>
 
             {/* Custom Interactive SVG Graph canvas */}
@@ -310,15 +310,15 @@ export default function Graphs({ receipts }: GraphsProps) {
               </svg>
 
               {/* X Axis Marks */}
-              <div className="flex justify-between text-[10px] text-slate-400 font-mono px-1 border-t border-slate-100 pt-1.5">
+              <div className="flex justify-between text-[10px] text-slate-400 dark:text-gray-500 font-mono px-1 border-t border-slate-100 pt-1.5">
                 {trendData.map((d, idx) => (
                   <span key={idx} className="text-center">{d.date}</span>
                 ))}
               </div>
             </div>
 
-            <div className="p-3 bg-slate-50 border border-slate-100 rounded-xl text-[11px] text-slate-500 font-medium flex items-start gap-2">
-              <Info className="w-3.5 h-3.5 text-slate-400 mt-0.5 flex-shrink-0" />
+            <div className="p-3 bg-slate-50 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 rounded-xl text-[11px] text-slate-500 dark:text-gray-400 font-medium flex items-start gap-2">
+              <Info className="w-3.5 h-3.5 text-slate-400 dark:text-gray-500 mt-0.5 flex-shrink-0" />
               <span>
                 Coloca el cursor sobre los nodos activos para ver el monto exacto desembolsado ese día. Los días en blanco indican que no hubo consumos.
               </span>

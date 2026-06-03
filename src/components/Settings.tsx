@@ -36,47 +36,47 @@ export default function SettingsView({ receipts, onResetToDemo, onClearDatabase,
     <div id="settings-view-wrapper" className="space-y-6">
       
       {/* 1. API Information & Compliance Card */}
-      <div id="api-key-config-card" className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-xs space-y-4">
+      <div id="api-key-config-card" className="bg-white dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 rounded-2xl p-6 shadow-xs space-y-4">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-[#F3F4F6] rounded-xl text-black border border-[#E5E7EB]">
+          <div className="p-2.5 bg-[#F3F4F6] dark:bg-gray-700 rounded-xl text-black border border-[#E5E7EB] dark:border-gray-700">
             <Key className="w-5 h-5 stroke-[1.8]" />
           </div>
           <div>
-            <h3 className="font-bold text-[#111827] text-sm">Configuraciones de la API Key</h3>
-            <p className="text-xs text-[#6B7280] mt-0.5 font-semibold">Cómo se gestionan las credenciales inteligentes de Gemini</p>
+            <h3 className="font-bold text-[#111827] dark:text-gray-100 text-sm">Configuraciones de la API Key</h3>
+            <p className="text-xs text-[#6B7280] dark:text-gray-400 mt-0.5 font-semibold">Cómo se gestionan las credenciales inteligentes de Gemini</p>
           </div>
         </div>
 
-        <div className="text-xs text-[#6B7280] leading-relaxed space-y-3 p-4 bg-[#F9FAFB] rounded-xl border border-[#E5E7EB]">
+        <div className="text-xs text-[#6B7280] dark:text-gray-400 leading-relaxed space-y-3 p-4 bg-[#F9FAFB] dark:bg-gray-700 rounded-xl border border-[#E5E7EB] dark:border-gray-700">
           <p>
-            <strong className="text-slate-800 font-semibold block mb-1">Manejo Automático Integrado:</strong>
+            <strong className="text-slate-800 dark:text-gray-100 font-semibold block mb-1">Manejo Automático Integrado:</strong>
             Las llamadas a la API de Gemini se resuelven de forma 100% segura en nuestro servidor Node de procesamiento masivo. La clave 
-            <code className="bg-slate-200/60 px-1.5 py-0.5 rounded mx-1 text-slate-700 font-mono font-semibold">GEMINI_API_KEY</code> es inyectada automáticamente 
+            <code className="bg-slate-200/60 dark:bg-gray-700 px-1.5 py-0.5 rounded mx-1 text-slate-700 dark:text-gray-300 font-mono font-semibold">GEMINI_API_KEY</code> es inyectada automáticamente 
             por la plataforma desde tus secretos confidenciales en **Settings &gt; Secrets**. No necesitas codificarla manualmente en el navegador.
           </p>
         </div>
 
         {/* Custom Override Settings */}
-        <div className="border-t border-[#E5E7EB] pt-4 space-y-2">
+        <div className="border-t border-[#E5E7EB] dark:border-gray-700 pt-4 space-y-2">
           <button
             type="button"
             onClick={() => setShowOverride(!showOverride)}
-            className="text-xs font-bold text-neutral-600 hover:text-black flex items-center gap-1 cursor-pointer transition-colors"
+            className="text-xs font-bold text-neutral-600 dark:text-gray-400 hover:text-black flex items-center gap-1 cursor-pointer transition-colors"
           >
             {showOverride ? 'Ocultar' : 'Mostrar'} configuraciones de clave personalizadas (avanzado)
           </button>
 
           {showOverride && (
             <div className="p-4 bg-amber-500/5 rounded-xl border border-amber-500/10 space-y-3.5 max-w-xl transition-all">
-              <label className="text-xs font-bold text-slate-700 block">Sustituir Clave de Gemini (Opcional):</label>
+              <label className="text-xs font-bold text-slate-700 dark:text-gray-300 block">Sustituir Clave de Gemini (Opcional):</label>
               <input
                 type="password"
                 value={customApiKey}
                 onChange={(e) => setCustomApiKey(e.target.value)}
                 placeholder="Inserta tu GEMINI_API_KEY personalizada..."
-                className="w-full text-xs px-3.5 py-2.5 border border-[#E5E7EB] rounded-xl focus:outline-none focus:border-black bg-white"
+                className="w-full text-xs px-3.5 py-2.5 border border-[#E5E7EB] dark:border-gray-700 rounded-xl focus:outline-none focus:border-black bg-white dark:bg-gray-800"
               />
-              <p className="text-[10px] text-slate-400">
+              <p className="text-[10px] text-slate-400 dark:text-gray-500">
                 Deja este campo en blanco si deseas utilizar la clave gratuita predeterminada de la plataforma en la nube.
               </p>
             </div>
@@ -85,35 +85,35 @@ export default function SettingsView({ receipts, onResetToDemo, onClearDatabase,
       </div>
 
       {/* 2. Database & Storage Management */}
-      <div id="storage-config-card" className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-xs space-y-4">
+      <div id="storage-config-card" className="bg-white dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 rounded-2xl p-6 shadow-xs space-y-4">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-[#F3F4F6] rounded-xl text-black border border-[#E5E7EB]">
+          <div className="p-2.5 bg-[#F3F4F6] dark:bg-gray-700 rounded-xl text-black border border-[#E5E7EB] dark:border-gray-700">
             <Database className="w-5 h-5 stroke-[1.8]" />
           </div>
           <div>
-            <h3 className="font-bold text-[#111827] text-sm">Persistencia Local del Sistema</h3>
-            <p className="text-xs text-[#6B7280] mt-0.5 font-semibold">Controla y monitorea el espacio utilizado por las facturas procesadas ($0 Infraestructura)</p>
+            <h3 className="font-bold text-[#111827] dark:text-gray-100 text-sm">Persistencia Local del Sistema</h3>
+            <p className="text-xs text-[#6B7280] dark:text-gray-400 mt-0.5 font-semibold">Controla y monitorea el espacio utilizado por las facturas procesadas ($0 Infraestructura)</p>
           </div>
         </div>
 
         {/* Local database parameters summary */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="p-4 bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl space-y-1">
-            <span className="text-[10px] font-mono font-bold text-[#6B7280] uppercase">Facturas Guardadas</span>
-            <span className="text-lg font-bold text-neutral-80 block">{stats.totalRecords}</span>
+          <div className="p-4 bg-[#F9FAFB] dark:bg-gray-700 border border-[#E5E7EB] dark:border-gray-700 rounded-xl space-y-1">
+            <span className="text-[10px] font-mono font-bold text-[#6B7280] dark:text-gray-400 uppercase">Facturas Guardadas</span>
+            <span className="text-lg font-bold text-neutral-800 dark:text-gray-200 block">{stats.totalRecords}</span>
           </div>
-          <div className="p-4 bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl space-y-1">
-            <span className="text-[10px] font-mono font-bold text-[#6B7280] uppercase">Espacio Estimado</span>
-            <span className="text-lg font-bold text-neutral-80 block">{stats.dbSizeEstimate} KB</span>
+          <div className="p-4 bg-[#F9FAFB] dark:bg-gray-700 border border-[#E5E7EB] dark:border-gray-700 rounded-xl space-y-1">
+            <span className="text-[10px] font-mono font-bold text-[#6B7280] dark:text-gray-400 uppercase">Espacio Estimado</span>
+            <span className="text-lg font-bold text-neutral-800 dark:text-gray-200 block">{stats.dbSizeEstimate} KB</span>
           </div>
-          <div className="p-4 bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl space-y-1">
-            <span className="text-[10px] font-mono font-bold text-[#6B7280] uppercase">Última Operación</span>
-            <span className="text-xs font-bold text-neutral-75 block truncate" title={stats.lastUpdated}>{stats.lastUpdated}</span>
+          <div className="p-4 bg-[#F9FAFB] dark:bg-gray-700 border border-[#E5E7EB] dark:border-gray-700 rounded-xl space-y-1">
+            <span className="text-[10px] font-mono font-bold text-[#6B7280] dark:text-gray-400 uppercase">Última Operación</span>
+            <span className="text-xs font-bold text-neutral-700 dark:text-gray-300 block truncate" title={stats.lastUpdated}>{stats.lastUpdated}</span>
           </div>
         </div>
 
         {/* Action controls */}
-        <div className="flex flex-wrap items-center gap-3 border-t border-[#E5E7EB] pt-5">
+        <div className="flex flex-wrap items-center gap-3 border-t border-[#E5E7EB] dark:border-gray-700 pt-5">
           <button
             onClick={() => {
               if (confirm('¿Deseas restaurar la base de datos local con los recibos de demostración precargados?')) {
@@ -131,7 +131,7 @@ export default function SettingsView({ receipts, onResetToDemo, onClearDatabase,
                 onClearDatabase();
               }
             }}
-            className="px-5 py-2.5 bg-white border border-red-200 text-red-600 rounded-full font-semibold text-xs hover:bg-red-50 hover:border-red-300 flex items-center gap-1.5 cursor-pointer transition-colors shadow-xs"
+            className="px-5 py-2.5 bg-white dark:bg-gray-800 border border-red-200 text-red-600 rounded-full font-semibold text-xs hover:bg-red-50 hover:border-red-300 flex items-center gap-1.5 cursor-pointer transition-colors shadow-xs"
           >
             <Trash2 className="w-3.5 h-3.5" /> Borrar Todo
           </button>
@@ -139,31 +139,31 @@ export default function SettingsView({ receipts, onResetToDemo, onClearDatabase,
       </div>
 
       {/* 3. Help Guides for Gemini Integration */}
-      <div id="api-integration-help-card" className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-xs space-y-4">
+      <div id="api-integration-help-card" className="bg-white dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 rounded-2xl p-6 shadow-xs space-y-4">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-[#F3F4F6] rounded-xl text-black border border-[#E5E7EB]">
+          <div className="p-2.5 bg-[#F3F4F6] dark:bg-gray-700 rounded-xl text-black border border-[#E5E7EB] dark:border-gray-700">
             <HelpCircle className="w-5 h-5 stroke-[1.8]" />
           </div>
           <div>
-            <h3 className="font-bold text-[#111827] text-sm">Estructura Tecnológica de Gemini</h3>
-            <p className="text-xs text-[#6B7280] mt-0.5 font-semibold">Qué hace posible la extracción de metadatos e ítems</p>
+            <h3 className="font-bold text-[#111827] dark:text-gray-100 text-sm">Estructura Tecnológica de Gemini</h3>
+            <p className="text-xs text-[#6B7280] dark:text-gray-400 mt-0.5 font-semibold">Qué hace posible la extracción de metadatos e ítems</p>
           </div>
         </div>
 
-        <div className="space-y-3 text-xs text-[#6B7280] leading-relaxed bg-[#F9FAFB] p-5 rounded-xl border border-[#E5E7EB]">
+        <div className="space-y-3 text-xs text-[#6B7280] dark:text-gray-400 leading-relaxed bg-[#F9FAFB] dark:bg-gray-700 p-5 rounded-xl border border-[#E5E7EB] dark:border-gray-700">
           <p>
             Al arrastrar una imagen en la **Zona de Carga Masiva**, nuestro backend Express procesa la imagen leyéndola como un buffer binario 
             codificado en Base64. Éste se envía directamente al modelo con visión <strong>gemini-3.5-flash</strong>.
           </p>
           <p>
-            El sistema utiliza el parámetro <code className="bg-slate-200/60 px-1.5 py-0.5 rounded text-slate-700 font-mono font-semibold">responseSchema</code> del SDK para 
+            El sistema utiliza el parámetro <code className="bg-slate-200/60 dark:bg-gray-700 px-1.5 py-0.5 rounded text-slate-700 dark:text-gray-300 font-mono font-semibold">responseSchema</code> del SDK para 
             establecer un contrato estricto de schema de salida en JSON. Esto garantiza que todos los cálculos matemáticos (Subtotal, 
             Tasas, Moneda, Ítems individuales) entren limpios al dashboard local.
           </p>
 
           <button
             onClick={copyPromptText}
-            className="mt-2 text-[10px] font-bold text-neutral-700 hover:text-black flex items-center gap-1 bg-white border border-[#E5E7EB] px-3.5 py-2 rounded-full shadow-xs cursor-pointer"
+            className="mt-2 text-[10px] font-bold text-neutral-700 dark:text-gray-300 hover:text-black flex items-center gap-1 bg-white dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 px-3.5 py-2 rounded-full shadow-xs cursor-pointer"
           >
             {copiedText ? (
               <>
