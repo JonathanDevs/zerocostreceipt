@@ -31,11 +31,19 @@ export default function App() {
     const saved = localStorage.getItem('zerocostreceipt:darkmode');
     return saved === 'true';
   });
+  const [defaultTaxRate, setDefaultTaxRate] = useState(() => {
+    const saved = localStorage.getItem('zerocostreceipt:defaultTaxRate');
+    return saved ? parseFloat(saved) : 0.16;
+  });
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode);
     localStorage.setItem('zerocostreceipt:darkmode', String(darkMode));
   }, [darkMode]);
+
+  useEffect(() => {
+    localStorage.setItem('zerocostreceipt:defaultTaxRate', String(defaultTaxRate));
+  }, [defaultTaxRate]);
 
   // Time Filters for Dashboard KPIs
   const [activeFilter, setActiveFilter] = useState<TimeFilter>('monthly');
@@ -231,6 +239,7 @@ export default function App() {
                   receipts={receipts}
                   onReceiptUpdated={handleReceiptUpdated}
                   onReceiptDeleted={handleReceiptDeleted}
+                  defaultTaxRate={defaultTaxRate}
                 />
               </div>
             </div>
@@ -269,6 +278,7 @@ export default function App() {
                   receipts={receipts}
                   onReceiptUpdated={handleReceiptUpdated}
                   onReceiptDeleted={handleReceiptDeleted}
+                  defaultTaxRate={defaultTaxRate}
                 />
               </div>
             </div>
@@ -287,6 +297,8 @@ export default function App() {
               onClearDatabase={handleClearDatabase}
               customApiKey={customApiKey}
               setCustomApiKey={handleSetCustomApiKey}
+              defaultTaxRate={defaultTaxRate}
+              onDefaultTaxRateChange={setDefaultTaxRate}
             />
           )}
 

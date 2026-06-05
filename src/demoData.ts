@@ -1,9 +1,7 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import { Receipt } from './types';
+import { getDefaultIsTaxable, getDefaultTaxRate } from './utils/tax';
+
+const t = (cat: string) => ({ isTaxable: getDefaultIsTaxable(cat), taxRate: getDefaultTaxRate(cat) });
 
 export const DEMO_RECEIPTS: Receipt[] = [
   {
@@ -16,6 +14,7 @@ export const DEMO_RECEIPTS: Receipt[] = [
     total: 62.05,
     moneda: 'USD',
     categoria_sugerida: 'Alimentación',
+    ...t('Alimentación'),
     createdAt: new Date(Date.now() - 6 * 24 * 3600 * 1000).toISOString(),
     items: [
       { descripcion: 'Harina de Maíz Precocida 1kg', cantidad: 4, precio_unitario: 1.50 },
@@ -37,6 +36,7 @@ export const DEMO_RECEIPTS: Receipt[] = [
     total: 18.50,
     moneda: 'USD',
     categoria_sugerida: 'Salud',
+    ...t('Salud'),
     createdAt: new Date(Date.now() - 4 * 24 * 3600 * 1000).toISOString(),
     items: [
       { descripcion: 'Termómetro Digital Infrarrojo', cantidad: 1, precio_unitario: 12.00 },
@@ -54,6 +54,7 @@ export const DEMO_RECEIPTS: Receipt[] = [
     total: 359.60,
     moneda: 'VES',
     categoria_sugerida: 'Servicios',
+    ...t('Servicios'),
     createdAt: new Date(Date.now() - 11 * 24 * 3600 * 1000).toISOString(),
     items: [
       { descripcion: 'Servicio Plan Internet Aba Ultra 50Mbps', cantidad: 1, precio_unitario: 310.00 }
@@ -70,6 +71,7 @@ export const DEMO_RECEIPTS: Receipt[] = [
     total: 17.40,
     moneda: 'USD',
     categoria_sugerida: 'Transporte',
+    ...t('Transporte'),
     createdAt: new Date(Date.now() - 2 * 24 * 3600 * 1000).toISOString(),
     items: [
       { descripcion: 'Gasolina Premium Sin Plomo - Litros', cantidad: 34.8, precio_unitario: 0.50 }
@@ -86,6 +88,7 @@ export const DEMO_RECEIPTS: Receipt[] = [
     total: 145.00,
     moneda: 'USD',
     categoria_sugerida: 'Tecnología',
+    ...t('Tecnología'),
     createdAt: new Date(Date.now() - 1 * 24 * 3600 * 1000).toISOString(),
     items: [
       { descripcion: 'Memoria SSD M.2 NVMe 1TB PNY', cantidad: 1, precio_unitario: 89.00 },
@@ -103,6 +106,7 @@ export const DEMO_RECEIPTS: Receipt[] = [
     total: 139.20,
     moneda: 'VES',
     categoria_sugerida: 'Alimentación',
+    ...t('Alimentación'),
     createdAt: new Date(Date.now() - 21 * 24 * 3600 * 1000).toISOString(),
     items: [
       { descripcion: 'Bagette Francés Grande', cantidad: 5, precio_unitario: 12.00 },
@@ -120,6 +124,7 @@ export const DEMO_RECEIPTS: Receipt[] = [
     total: 10.99,
     moneda: 'USD',
     categoria_sugerida: 'Entretenimiento',
+    ...t('Entretenimiento'),
     createdAt: new Date(Date.now() - 16 * 24 * 3600 * 1000).toISOString(),
     items: [
       { descripcion: 'Netflix Standard Plan', cantidad: 1, precio_unitario: 10.99 }

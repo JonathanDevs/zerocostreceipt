@@ -13,9 +13,11 @@ interface SettingsProps {
   onClearDatabase: () => void;
   customApiKey: string;
   setCustomApiKey: (key: string) => void;
+  defaultTaxRate: number;
+  onDefaultTaxRateChange: (rate: number) => void;
 }
 
-export default function SettingsView({ receipts, onResetToDemo, onClearDatabase, customApiKey, setCustomApiKey }: SettingsProps) {
+export default function SettingsView({ receipts, onResetToDemo, onClearDatabase, customApiKey, setCustomApiKey, defaultTaxRate, onDefaultTaxRateChange }: SettingsProps) {
   const [copiedText, setCopiedText] = useState(false);
   const [showOverride, setShowOverride] = useState(false);
 
@@ -138,7 +140,57 @@ export default function SettingsView({ receipts, onResetToDemo, onClearDatabase,
         </div>
       </div>
 
-      {/* 3. Help Guides for Gemini Integration */}
+      {/* 3. IVA / Tax Configuration */}
+      <div id="tax-config-card" className="bg-white dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 rounded-2xl p-6 shadow-xs space-y-4">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 bg-[#F3F4F6] dark:bg-gray-700 rounded-xl text-black border border-[#E5E7EB] dark:border-gray-700">
+            <Sparkles className="w-5 h-5 stroke-[1.8]" />
+          </div>
+          <div>
+            <h3 className="font-bold text-[#111827] dark:text-gray-100 text-sm">Configuración de IVA</h3>
+            <p className="text-xs text-[#6B7280] dark:text-gray-400 mt-0.5 font-semibold">Tasa de impuesto predeterminada para cálculos automáticos</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4 flex-wrap">
+          <label className="text-xs font-bold text-[#6B7280] dark:text-gray-400">Tasa de IVA por defecto:</label>
+          <div className="flex items-center gap-2">
+            <input
+              type="number"
+              step="0.5"
+              min="0"
+              max="100"
+              value={defaultTaxRate * 100}
+              onChange={(e) => onDefaultTaxRateChange((parseFloat(e.target.value) || 0) / 100)}
+              className="w-24 text-xs px-3 py-2 border border-[#E5E7EB] dark:border-gray-700 rounded-xl bg-[#F9FAFB] dark:bg-gray-700 text-center font-mono font-bold focus:outline-none focus:border-black"
+            />
+            <span className="text-xs font-bold text-[#6B7280] dark:text-gray-400">%</span>
+          </div>
+          <p className="text-[10px] text-slate-400 dark:text-gray-500">
+            Se aplicará esta tasa a las categorías gravables (Alimentación, Transporte, Tecnología, Hogar, Entretenimiento). 
+            Servicios, Educación y Salud se marcan como exentos automáticamente.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {[
+            { cat: 'Alimentación', rate: defaultTaxRate },
+            { cat: 'Servicios', rate: 0 },
+            { cat: 'Transporte', rate: defaultTaxRate },
+            { cat: 'Tecnología', rate: defaultTaxRate },
+            { cat: 'Salud', rate: 0 },
+            { cat: 'Hogar', rate: defaultTaxRate },
+            { cat: 'Entretenimiento', rate: defaultTaxRate },
+            { cat: 'Educación', rate: 0 },
+          ].map(({ cat, rate }) => (
+            <span key={cat} className={`px-2 py-1 rounded-lg text-[10px] font-semibold ${rate > 0 ? 'bg-black text-white' : 'bg-slate-100 dark:bg-gray-700 text-slate-500 dark:text-gray-400'}`}>
+              {cat} {rate > 0 ? `${(rate * 100).toFixed(1)}%` : 'Exento'}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* 4. Help Guides for Gemini Integration */}
       <div id="api-integration-help-card" className="bg-white dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 rounded-2xl p-6 shadow-xs space-y-4">
         <div className="flex items-center gap-3">
           <div className="p-2.5 bg-[#F3F4F6] dark:bg-gray-700 rounded-xl text-black border border-[#E5E7EB] dark:border-gray-700">

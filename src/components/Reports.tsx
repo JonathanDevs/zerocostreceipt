@@ -4,6 +4,7 @@ import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import type { Receipt } from '../types';
+import { computeTaxBreakdown } from '../utils/tax';
 
 interface ReportsProps {
   receipts: Receipt[];
@@ -60,23 +61,30 @@ export default function Reports({ receipts }: ReportsProps) {
     return receipts.reduce((max, r) => r.fecha_emision > max ? r.fecha_emision : max, receipts[0].fecha_emision);
   }, [receipts]);
 
-  const tableData = useMemo(() => filtered.map(r => ({
-    Fecha: r.fecha_emision,
-    Comercio: r.comercio,
-    RIF: r.rif_o_identificacion_fiscal || '',
-    Categoría: r.categoria_sugerida,
-    Moneda: r.moneda,
-    Subtotal: r.subtotal,
-    'Impuestos': r.impuestos,
-    Total: r.total,
-    Notas: r.notes || '',
-  })), [filtered]);
+  const tableData = useMemo(() => filtered.map(r => {
+    const { netAmount, taxAmount } = computeTaxBreakdown(r.total, r.isTaxable, r.taxRate);
+    return {
+      Fecha: r.fecha_emision,
+      Comercio: r.comercio,
+      RIF: r.rif_o_identificacion_fiscal || '',
+      Categoría: r.categoria_sugerida,
+      Moneda: r.moneda,
+      'Base Imponible': netAmount,
+      'IVA': taxAmount,
+      '% IVA': r.isTaxable ? `${(r.taxRate * 100).toFixed(1)}%` : 'Exento',
+      Subtotal: r.subtotal,
+      'Impuestos': r.impuestos,
+      Total: r.total,
+      Notas: r.notes || '',
+    };
+  }), [filtered]);
 
   const exportExcel = () => {
     const ws = XLSX.utils.json_to_sheet(tableData);
     const colWidths = [
       { wch: 12 }, { wch: 30 }, { wch: 18 },
-      { wch: 16 }, { wch: 8 }, { wch: 10 },
+      { wch: 16 }, { wch: 8 }, { wch: 12 },
+      { wch: 10 }, { wch: 8 }, { wch: 10 },
       { wch: 10 }, { wch: 10 }, { wch: 40 },
     ];
     ws['!cols'] = colWidths;
@@ -103,11 +111,17 @@ export default function Reports({ receipts }: ReportsProps) {
     doc.setFontSize(9);
     doc.text(`Generado: ${new Date().toLocaleDateString('es-ES')}  |  Registros: ${filtered.length}`, 14, 28);
 
-    const headers = [['Fecha', 'Comercio', 'RIF', 'Categoría', 'Moneda', 'Subtotal', 'Impuestos', 'Total']];
-    const rows = filtered.map(r => [
-      r.fecha_emision, r.comercio, r.rif_o_identificacion_fiscal || '',
-      r.categoria_sugerida, r.moneda, r.subtotal, r.impuestos, r.total,
-    ]);
+    const headers = [['Fecha', 'Comercio', 'RIF', 'Categoría', 'Moneda', 'Base Imponible', 'IVA', '% IVA', 'Subtotal', 'Impuestos', 'Total']];
+    const rows = filtered.map(r => {
+      const { netAmount, taxAmount } = computeTaxBreakdown(r.total, r.isTaxable, r.taxRate);
+      return [
+        r.fecha_emision, r.comercio, r.rif_o_identificacion_fiscal || '',
+        r.categoria_sugerida, r.moneda,
+        netAmount.toFixed(2), taxAmount.toFixed(2),
+        r.isTaxable ? `${(r.taxRate * 100).toFixed(1)}%` : 'Exento',
+        r.subtotal, r.impuestos, r.total,
+      ];
+    });
 
     autoTable(doc, {
       head: headers,
@@ -125,7 +139,13 @@ export default function Reports({ receipts }: ReportsProps) {
     yOffset += 6;
     doc.setFontSize(9);
     for (const [moneda, info] of totalsEntries) {
-      doc.text(`${moneda}: Total ${info.total.toFixed(2)}  (${info.count} recibos)`, 14, yOffset);
+      const { netAmount, taxAmount } = filtered
+        .filter(r => r.moneda === moneda)
+        .reduce((acc, r) => {
+          const { netAmount, taxAmount } = computeTaxBreakdown(r.total, r.isTaxable, r.taxRate);
+          return { netAmount: acc.netAmount + netAmount, taxAmount: acc.taxAmount + taxAmount };
+        }, { netAmount: 0, taxAmount: 0 });
+      doc.text(`${moneda}: Total ${info.total.toFixed(2)}  |  Base ${netAmount.toFixed(2)}  |  IVA ${taxAmount.toFixed(2)}  (${info.count} recibos)`, 14, yOffset);
       yOffset += 5;
     }
 
@@ -246,13 +266,18 @@ export default function Reports({ receipts }: ReportsProps) {
                   <th className="pb-2.5 pr-3 font-semibold">Comercio</th>
                   <th className="pb-2.5 pr-3 font-semibold">Categoría</th>
                   <th className="pb-2.5 pr-3 font-semibold">Moneda</th>
+                  <th className="pb-2.5 pr-3 font-semibold text-right">Base</th>
+                  <th className="pb-2.5 pr-3 font-semibold text-right">IVA</th>
+                  <th className="pb-2.5 pr-3 font-semibold text-right">%</th>
                   <th className="pb-2.5 pr-3 font-semibold text-right">Subtotal</th>
                   <th className="pb-2.5 pr-3 font-semibold text-right">Impuestos</th>
                   <th className="pb-2.5 font-semibold text-right">Total</th>
                 </tr>
               </thead>
               <tbody>
-                {filtered.map(r => (
+                {filtered.map(r => {
+                  const { netAmount, taxAmount } = computeTaxBreakdown(r.total, r.isTaxable, r.taxRate);
+                  return (
                   <tr key={r.id} className="border-b border-slate-100 dark:border-gray-700 last:border-0 hover:bg-slate-50 dark:hover:bg-gray-700 transition-colors">
                     <td className="py-2.5 pr-3 text-slate-600 dark:text-gray-400">{r.fecha_emision}</td>
                     <td className="py-2.5 pr-3 font-medium">{r.comercio}</td>
@@ -260,15 +285,19 @@ export default function Reports({ receipts }: ReportsProps) {
                       <span className="bg-slate-100 dark:bg-gray-700 text-slate-700 dark:text-gray-300 px-2 py-0.5 rounded text-[10px] font-semibold">{r.categoria_sugerida}</span>
                     </td>
                     <td className="py-2.5 pr-3 text-slate-500 dark:text-gray-400">{r.moneda}</td>
+                    <td className="py-2.5 pr-3 text-right font-mono text-slate-600 dark:text-gray-400">{netAmount.toFixed(2)}</td>
+                    <td className="py-2.5 pr-3 text-right font-mono text-slate-600 dark:text-gray-400">{taxAmount.toFixed(2)}</td>
+                    <td className="py-2.5 pr-3 text-right text-[10px] text-slate-500 dark:text-gray-400">{r.isTaxable ? `${(r.taxRate * 100).toFixed(1)}%` : '—'}</td>
                     <td className="py-2.5 pr-3 text-right font-mono text-slate-600 dark:text-gray-400">{r.subtotal.toFixed(2)}</td>
                     <td className="py-2.5 pr-3 text-right font-mono text-slate-600 dark:text-gray-400">{r.impuestos.toFixed(2)}</td>
                     <td className="py-2.5 text-right font-mono font-bold">{r.total.toFixed(2)}</td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
               <tfoot>
                 <tr className="border-t border-slate-200 dark:border-gray-700 font-bold text-sm">
-                  <td colSpan={6} className="pt-3 pr-3 text-right">Totales:</td>
+                  <td colSpan={9} className="pt-3 pr-3 text-right">Totales:</td>
                   <td className="pt-3 text-right font-mono">
                     {totalsEntries.map(([m, t]) => (
                       <div key={m}>{m} {t.total.toFixed(2)}</div>

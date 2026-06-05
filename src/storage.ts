@@ -1,4 +1,5 @@
 import type { Receipt } from './types';
+import { getDefaultIsTaxable, getDefaultTaxRate } from './utils/tax';
 
 const STORAGE_VERSION = 'v1';
 const RECEIPTS_KEY_CURRENT = `zerocostreceipt:db:${STORAGE_VERSION}`;
@@ -58,14 +59,15 @@ function parseReceipts(raw: string | null): Receipt[] | null {
 export function loadReceipts(): Receipt[] | null {
   const current = parseReceipts(safeGetItem(RECEIPTS_KEY_CURRENT));
   if (current) {
-    return current;
+    return migrateReceipts(current);
   }
 
   const legacy = parseReceipts(safeGetItem(RECEIPTS_KEY_LEGACY));
   if (legacy) {
-    saveReceipts(legacy);
+    const migrated = migrateReceipts(legacy);
+    saveReceipts(migrated);
     safeRemoveItem(RECEIPTS_KEY_LEGACY);
-    return legacy;
+    return migrated;
   }
 
   return null;
@@ -98,6 +100,14 @@ export function saveCustomApiKey(key: string): void {
 export function clearCustomApiKey(): void {
   safeRemoveItem(API_KEY_KEY_CURRENT);
   safeRemoveItem(API_KEY_KEY_LEGACY);
+}
+
+function migrateReceipts(receipts: Receipt[]): Receipt[] {
+  return receipts.map((r) => ({
+    ...r,
+    isTaxable: r.isTaxable ?? getDefaultIsTaxable(r.categoria_sugerida),
+    taxRate: r.taxRate ?? getDefaultTaxRate(r.categoria_sugerida),
+  }));
 }
 
 if (typeof window !== 'undefined') {

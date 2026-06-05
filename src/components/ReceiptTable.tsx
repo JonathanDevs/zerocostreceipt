@@ -6,11 +6,13 @@
 import { useState, FormEvent } from 'react';
 import { Search, Edit, Trash2, Eye, Calendar, DollarSign, Archive, Tag, MapPin, X, Check, Plus, AlertCircle } from 'lucide-react';
 import { Receipt, ReceiptItem } from '../types';
+import { computeTaxBreakdown, getDefaultIsTaxable, getDefaultTaxRate } from '../utils/tax';
 
 interface ReceiptTableProps {
   receipts: Receipt[];
   onReceiptUpdated: (receipt: Receipt) => void;
   onReceiptDeleted: (id: string) => void;
+  defaultTaxRate: number;
 }
 
 const CATEGORIES = [
@@ -25,7 +27,7 @@ const CATEGORIES = [
   'Otros'
 ];
 
-export default function ReceiptTable({ receipts, onReceiptUpdated, onReceiptDeleted }: ReceiptTableProps) {
+export default function ReceiptTable({ receipts, onReceiptUpdated, onReceiptDeleted, defaultTaxRate }: ReceiptTableProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedCurrency, setSelectedCurrency] = useState('All');
@@ -252,13 +254,13 @@ export default function ReceiptTable({ receipts, onReceiptUpdated, onReceiptDele
 
                     {/* Column 6: Actions */}
                     <td className="py-4 px-5">
-                      <div className="flex items-center justify-center gap-1.5 opacity-80 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center justify-center gap-1.5">
                         {/* View Action */}
                         <button
                           onClick={() => setViewingReceipt(receipt)}
                           id={`action-view-${receipt.id}`}
                           title="Ver Detalle"
-                          className="p-1.5 hover:bg-[#F3F4F6] dark:bg-gray-700 text-[#6B7280] dark:text-gray-400 hover:text-black rounded-lg transition-colors cursor-pointer"
+                          className="p-1.5 text-[#6B7280] dark:text-gray-400 hover:bg-[#F3F4F6] dark:hover:bg-gray-600 hover:text-black dark:hover:text-white rounded-lg transition-colors cursor-pointer"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
@@ -267,7 +269,7 @@ export default function ReceiptTable({ receipts, onReceiptUpdated, onReceiptDele
                           onClick={() => setEditingReceipt(receipt)}
                           id={`action-edit-${receipt.id}`}
                           title="Editar Recibo"
-                          className="p-1.5 hover:bg-[#F3F4F6] dark:bg-gray-700 text-[#6B7280] dark:text-gray-400 hover:text-black rounded-lg transition-colors cursor-pointer"
+                          className="p-1.5 text-[#6B7280] dark:text-gray-400 hover:bg-[#F3F4F6] dark:hover:bg-gray-600 hover:text-black dark:hover:text-white rounded-lg transition-colors cursor-pointer"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
@@ -276,7 +278,7 @@ export default function ReceiptTable({ receipts, onReceiptUpdated, onReceiptDele
                           onClick={() => onReceiptDeleted(receipt.id)}
                           id={`action-delete-${receipt.id}`}
                           title="Eliminar Recibo"
-                          className="p-1.5 hover:bg-[#F3F4F6] dark:bg-gray-700 text-[#6B7280] dark:text-gray-400 hover:text-[#EF4444] rounded-lg transition-colors cursor-pointer"
+                          className="p-1.5 text-[#6B7280] dark:text-gray-400 hover:bg-[#F3F4F6] dark:hover:bg-gray-600 hover:text-[#EF4444] rounded-lg transition-colors cursor-pointer"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -301,7 +303,7 @@ export default function ReceiptTable({ receipts, onReceiptUpdated, onReceiptDele
                 <span className="text-[10px] uppercase font-bold tracking-wider font-mono text-[#6B7280] dark:text-gray-400 bg-[#F3F4F6] dark:bg-gray-700 border border-[#E5E7EB] dark:border-gray-700 px-2.5 py-1 rounded-md">
                   Factura de Venta
                 </span>
-                <h3 className="text-base font-bold text-slate-900 mt-2 truncate max-w-md">
+                <h3 className="text-base font-bold text-slate-900 dark:text-gray-100 mt-2 truncate max-w-md">
                   {viewingReceipt.comercio}
                 </h3>
               </div>
@@ -397,7 +399,7 @@ export default function ReceiptTable({ receipts, onReceiptUpdated, onReceiptDele
                 </div>
                 <div className="flex gap-10 text-base font-bold text-slate-800 dark:text-gray-100 border-t border-[#E5E7EB] dark:border-gray-700 pt-2.5 mt-2 flex-row">
                   <span>Total Facturado:</span>
-                  <span className="text-right min-w-[100px] text-black font-light tracking-tighter text-lg font-sans">
+                  <span className="text-right min-w-[100px] text-black dark:text-white font-light tracking-tighter text-lg font-sans">
                     {viewingReceipt.moneda} {viewingReceipt.total.toFixed(2)}
                   </span>
                 </div>
@@ -447,7 +449,7 @@ export default function ReceiptTable({ receipts, onReceiptUpdated, onReceiptDele
             
             {/* Header */}
             <div className="p-6 border-b border-[#E5E7EB] dark:border-gray-700 flex items-center justify-between bg-white dark:bg-gray-800 rounded-t-3xl">
-              <h3 className="text-base font-bold text-slate-900">
+              <h3 className="text-base font-bold text-slate-900 dark:text-gray-100">
                 Editar Datos de Factura/Recibo
               </h3>
               <button
@@ -509,7 +511,12 @@ export default function ReceiptTable({ receipts, onReceiptUpdated, onReceiptDele
                   <label className="text-xs font-bold text-[#6B7280] dark:text-gray-400">Categoría</label>
                   <select
                     value={editingReceipt.categoria_sugerida}
-                    onChange={(e) => setEditingReceipt({ ...editingReceipt, categoria_sugerida: e.target.value })}
+                    onChange={(e) => setEditingReceipt({
+                        ...editingReceipt,
+                        categoria_sugerida: e.target.value,
+                        isTaxable: getDefaultIsTaxable(e.target.value),
+                        taxRate: getDefaultTaxRate(e.target.value, defaultTaxRate),
+                      })}
                     className="w-full text-xs px-3.5 py-2 border border-[#E5E7EB] dark:border-gray-700 rounded-lg focus:ring-1 focus:ring-black focus:outline-none focus:border-black bg-[#F9FAFB] dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-700 text-neutral-850 font-medium cursor-pointer"
                   >
                     {CATEGORIES.map(category => (
@@ -623,7 +630,16 @@ export default function ReceiptTable({ receipts, onReceiptUpdated, onReceiptDele
               <div className="border-t border-[#E5E7EB] dark:border-gray-700 pt-4 flex flex-col items-end gap-1.5 text-xs font-mono font-bold text-[#6B7280] dark:text-gray-400">
                 <div>Subtotal: {editingReceipt.moneda} {editingReceipt.subtotal.toFixed(2)}</div>
                 <div>Impuestos: {editingReceipt.moneda} {editingReceipt.impuestos.toFixed(2)}</div>
-                <div className="text-sm text-black mt-1.5 border-t border-[#E5E7EB] dark:border-gray-700 pt-1.5 font-sans font-light text-base tracking-tighter">
+                {editingReceipt.isTaxable && editingReceipt.taxRate > 0 && (() => {
+                  const { netAmount, taxAmount } = computeTaxBreakdown(editingReceipt.total, editingReceipt.isTaxable, editingReceipt.taxRate);
+                  return (
+                    <>
+                      <div className="text-[#9CA3AF] dark:text-gray-500">Base Imponible: {editingReceipt.moneda} {netAmount.toFixed(2)}</div>
+                      <div className="text-[#9CA3AF] dark:text-gray-500">IVA ({editingReceipt.taxRate * 100}%): {editingReceipt.moneda} {taxAmount.toFixed(2)}</div>
+                    </>
+                  );
+                })()}
+                <div className="text-sm text-black dark:text-white mt-1.5 border-t border-[#E5E7EB] dark:border-gray-700 pt-1.5 font-sans font-light text-base tracking-tighter">
                   Monto Total: <span className="font-bold font-sans">{editingReceipt.moneda} {editingReceipt.total.toFixed(2)}</span>
                 </div>
               </div>

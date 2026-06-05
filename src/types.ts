@@ -19,6 +19,8 @@ export interface Receipt {
   total: number;
   moneda: string; // USD, VES, EUR, etc.
   categoria_sugerida: string; // Alimentación, Servicios, Transporte, etc.
+  isTaxable: boolean;
+  taxRate: number; // 0.16 = 16%
   items: ReceiptItem[];
   imageUrl?: string; // local storage data URL or image path if stored
   notes?: string;

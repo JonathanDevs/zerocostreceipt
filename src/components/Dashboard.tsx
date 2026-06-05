@@ -6,6 +6,7 @@
 import { useMemo } from 'react';
 import { CreditCard, Receipt as ReceiptIcon, Scale, ArrowUpRight, TrendingUp, Sparkles } from 'lucide-react';
 import { Receipt, TimeFilter, DateRange } from '../types';
+import { computeTaxBreakdown } from '../utils/tax';
 
 interface DashboardProps {
   receipts: Receipt[];
@@ -70,22 +71,27 @@ export default function Dashboard({
   }, [receipts, activeFilter, customDateRange]);
 
   // Aggregate sums by currency to avoid mixing currencies
-  const { currencyTotals, currencyTaxes, categorySummary } = useMemo(() => {
+  const { currencyTotals, currencyTaxes, categorySummary, currencyTaxDetails } = useMemo(() => {
     const totals: Record<string, number> = {};
     const taxes: Record<string, number> = {};
     const categories: Record<string, number> = {};
+    const taxDetails: Record<string, { netAmount: number; taxAmount: number }> = {};
 
     filtered.forEach((r) => {
       const cur = r.moneda.toUpperCase();
       totals[cur] = (totals[cur] || 0) + r.total;
       taxes[cur] = (taxes[cur] || 0) + r.impuestos;
       categories[r.categoria_sugerida] = (categories[r.categoria_sugerida] || 0) + 1;
+      const { netAmount, taxAmount } = computeTaxBreakdown(r.total, r.isTaxable, r.taxRate);
+      const prev = taxDetails[cur] || { netAmount: 0, taxAmount: 0 };
+      taxDetails[cur] = { netAmount: prev.netAmount + netAmount, taxAmount: prev.taxAmount + taxAmount };
     });
 
     return {
       currencyTotals: totals,
       currencyTaxes: taxes,
       categorySummary: categories,
+      currencyTaxDetails: taxDetails,
     };
   }, [filtered]);
 
@@ -102,6 +108,11 @@ export default function Dashboard({
   const currencyTaxesEntries = useMemo(
     () => Object.entries(currencyTaxes) as Array<[string, number]>,
     [currencyTaxes],
+  );
+
+  const currencyTaxDetailsEntries = useMemo(
+    () => Object.entries(currencyTaxDetails) as Array<[string, { netAmount: number; taxAmount: number }]>,
+    [currencyTaxDetails],
   );
 
   // Determine top spending category based on count
@@ -208,17 +219,22 @@ export default function Dashboard({
             </div>
           </div>
           <div className="space-y-2">
-            {currencyTaxesEntries.length === 0 ? (
+            {currencyTaxDetailsEntries.length === 0 ? (
               <span className="text-3xl font-light tracking-tighter text-[#111827] dark:text-gray-100 block">$0.00</span>
             ) : (
-              currencyTaxesEntries.map(([currency, taxValue]) => (
-                <span key={currency} className="text-3xl font-light tracking-tighter text-[#111827] dark:text-gray-100 block leading-none">
-                  {currency} {taxValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </span>
+              currencyTaxDetailsEntries.map(([currency, { netAmount, taxAmount }]) => (
+                <div key={currency} className="space-y-1">
+                  <span className="text-3xl font-light tracking-tighter text-[#111827] dark:text-gray-100 block leading-none">
+                    {currency} {taxAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </span>
+                  <span className="text-[10px] text-[#9CA3AF] dark:text-gray-500 block font-mono">
+                    Base: {netAmount.toFixed(2)} | Tasa efectiva: {taxAmount > 0 ? ((taxAmount / netAmount) * 100).toFixed(1) : '0'}%
+                  </span>
+                </div>
               ))
             )}
             <div className="mt-2.5 flex items-center gap-1.5 text-[10px] font-bold text-[#6B7280] dark:text-gray-400 bg-[#F3F4F6] dark:bg-gray-700 px-2 py-0.5 rounded w-fit uppercase tracking-wider">
-              <span>Impuestos estimados</span>
+              <span>IVA calculado sobre total</span>
             </div>
           </div>
         </div>
